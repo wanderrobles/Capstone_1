@@ -1,41 +1,18 @@
 #include <Arduino.h>
-#include <WiFi.h>
 #include "config.h"
 #include "sensors.h"
 #include "display.h"
+#include "wifi_manager.h"
 
 sensor_reader sensors(MOIST_PIN, TEMP_PIN);
 display_manager display;
-
-
-void connectWiFi() {
-    display.showMessage("Connecting...", WIFI_SSID);
-    delay(2000);
-
-    WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
-    int attempts = 0;
-
-    while (WiFi.status() != WL_CONNECTED) {
-        delay(500);
-        attempts++;
-        if (attempts > 20) {
-            display.showMessage("WiFi failed!", "Check config.h");
-            Serial.println("WiFi connection failed");
-            return;
-        }
-    }
-
-    String ip = WiFi.localIP().toString();
-    display.showMessage("Connected!", ip);
-    Serial.println("Connected! IP: " + ip);
-    delay(2000);           
-}
+wifi_manager wifi;
 
 void setup() {
     Serial.begin(115200);
+    delay(1000);
     display.begin();
-    display.setBrightness(100);
-    connectWiFi(); 
+    wifi.begin();
 }
 
 void loop() {
@@ -43,12 +20,15 @@ void loop() {
     float temp   = sensors.readTemp();
 
     display.showReadings(moisture, temp);
-    int new_temp = temp * 9/5 + 32.00;
+
+    int tempF = temp * 9 / 5 + 32;
     Serial.print("Temp: ");
-    Serial.print(new_temp, 1);
+    Serial.print(tempF);
     Serial.print(" F  |  Moisture: ");
     Serial.print(moisture);
     Serial.println("%");
+
+    wifi.update(temp, moisture);
 
     delay(READ_INTERVAL_MS);
 }

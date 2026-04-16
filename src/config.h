@@ -1,15 +1,10 @@
 #pragma once
 
 // ── WiFi ──────────────────────────────────
-#define WIFI_SSID      "ARRIS-D8C5"
-#define WIFI_PASSWORD  "B05DD445D8C5"
-
-// ── MQTT Broker ───────────────────────────
-#define MQTT_BROKER    "192.168.1.50"
-#define MQTT_PORT      1883
-#define MQTT_USER      "capstone"
-#define MQTT_PASS      "secret"
-#define MQTT_CLIENT_ID "esp32-monitor-01"
+#define WIFI_SSID             "Angel (2)"
+#define WIFI_PASSWORD         "dimelomami"
+#define WIFI_CONNECT_TIMEOUT_MS  10000  // Max ms to wait for connection
+#define WIFI_RETRY_DELAY_MS      5000   // Ms to wait before retrying
 
 // ── Topics ────────────────────────────────
 #define TOPIC_TEMP     "home/env/temperature"
@@ -30,4 +25,9 @@
 #define LCD_BL_CH      0      // PWM channel backlight
 
 // ── Timing ────────────────────────────────
-#define READ_INTERVAL_MS  10000  // 30 seconds
+#define READ_INTERVAL_MS      10000     // 10 seconds between sensor reads
+#define SAMPLE_INTERVAL_MS    10800000  // 3 hours between HTTP sends
+
+// Local Python Server
+// Run `ifconfig` (Mac/Linux) to find your laptop's IP
+#define SERVER_URL      "http://10.11.3.255:5000/data"
