@@ -25,9 +25,12 @@
 #define LCD_BL_CH      0      // PWM channel backlight
 
 // ── Timing ────────────────────────────────
-#define READ_INTERVAL_MS      10000     // 10 seconds between sensor reads
-#define SAMPLE_INTERVAL_MS    10800000  // 3 hours between HTTP sends
+#define READ_INTERVAL_MS      30000     // 30 seconds between sensor reads
+#define SAMPLE_INTERVAL_MS    60000  // 3 hours between HTTP sends
+
+// NTP (Puerto Rico = UTC-4)
+#define NTP_OFFSET_SEC   (-4 * 3600)
 
 // Local Python Server
 // Run `ifconfig` (Mac/Linux) to find your laptop's IP
-#define SERVER_URL      "http://10.11.3.255:5000/data"
+#define SERVER_URL      "http://127.0.0.1:5000/data"
