@@ -6,7 +6,7 @@ from datetime import datetime
 app = Flask(__name__)
 
 # Path where the CSV will be saved — synced to OneDrive automatically
-CSV_PATH = "/Users/javigermosen/Library/CloudStorage/OneDrive-pupr.edu/Capstone/Data/data.csv"
+CSV_PATH = "/Users/wanderrobles/Capstone Project/data/data.csv"
 
 # Write CSV header if file doesn't exist yet
 if not os.path.exists(CSV_PATH):

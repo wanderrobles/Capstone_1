@@ -33,4 +33,4 @@
 
 // Local Python Server
 // Run `ifconfig` (Mac/Linux) to find your laptop's IP
-#define SERVER_URL      "http://127.0.0.1:5000/data"
+#define SERVER_URL      "http://10.11.3.110:5000/data"
