@@ -14,6 +14,7 @@
 // ── Hardware Pins ─────────────────────────
 #define TEMP_PIN       4      // DS18B20 data → GPIO4
 #define MOIST_PIN      34     // Soil moisture analog → GPIO34
+#define MOIST_PWR_PIN  26     // Sensor VCC → GPIO26 (switched to save power)
 
 #define LCD_RS         19
 #define LCD_EN         23
@@ -25,7 +26,7 @@
 #define LCD_BL_CH      0      // PWM channel backlight
 
 // ── Timing ────────────────────────────────
-#define READ_INTERVAL_MS      30000     // 30 seconds between sensor reads
+#define READ_INTERVAL_MS      1000      // 1 second between sensor reads
 #define SAMPLE_INTERVAL_MS    60000  // 3 hours between HTTP sends
 
 // NTP (Puerto Rico = UTC-4)

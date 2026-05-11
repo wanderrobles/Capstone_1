@@ -4,7 +4,7 @@
 #include "display.h"
 #include "wifi_manager.h"
 
-sensor_reader sensors(MOIST_PIN, TEMP_PIN);
+sensor_reader sensors(MOIST_PIN, MOIST_PWR_PIN, TEMP_PIN);
 display_manager display;
 wifi_manager wifi;
 
