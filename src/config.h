@@ -1,8 +1,8 @@
 #pragma once
 
 // ── WiFi ──────────────────────────────────
-#define WIFI_SSID             "Angel (2)"
-#define WIFI_PASSWORD         "dimelomami"
+#define WIFI_SSID             "Sebastian's S26 Ultra"
+#define WIFI_PASSWORD         "Luxeterna99"
 #define WIFI_CONNECT_TIMEOUT_MS  10000  // Max ms to wait for connection
 #define WIFI_RETRY_DELAY_MS      5000   // Ms to wait before retrying
 

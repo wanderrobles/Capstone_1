@@ -8,6 +8,7 @@ void wifi_manager::begin() {
     Serial.printf("[Boot] Reset reason: %d\n", esp_reset_reason());
     Serial.println("[WiFi] Starting...");
     Serial.printf("[WiFi] Connecting to: %s\n", WIFI_SSID);
+    WiFi.setAutoReconnect(true);
     WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
 }
 
@@ -39,7 +40,7 @@ void wifi_manager::sendReading() {
 
     HTTPClient http;
     http.begin(SERVER_URL);
-    http.setFollowRedirects(HTTPC_STRICT_FOLLOW_REDIRECTS); // required for Apps Script
+    http.setFollowRedirects(HTTPC_STRICT_FOLLOW_REDIRECTS);
     http.addHeader("Content-Type", "application/json");
 
     String body = "{\"timestamp\":\"" + String(_lastReading.timestamp) +
@@ -72,7 +73,7 @@ void wifi_manager::update(float temperature, int moisture) {
     // Always overwrite with the latest reading
     if (_isConnected && _ntpSynced) {
         if (getTimestamp(_lastReading.timestamp, sizeof(_lastReading.timestamp))) {
-            _lastReading.temperature  = temperature;
+            _lastReading.temperature   = temperature;
             _lastReading.soil_moisture = moisture;
             _hasReading = true;
             Serial.printf("[Reading] Updated — %s  temp=%.1f  soil=%d\n",
@@ -87,13 +88,9 @@ void wifi_manager::update(float temperature, int moisture) {
     }
 
     // Handle disconnection
-    if (WiFi.status() != WL_CONNECTED) {
-        if (_isConnected) {
-            Serial.println("[WiFi] Connection lost. Reconnecting...");
-        }
+    if (WiFi.status() != WL_CONNECTED && _isConnected) {
+        Serial.println("[WiFi] Connection lost. Reconnecting...");
         _isConnected = false;
-        Serial.print(".");
-        digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN));
-        delay(500);
+        digitalWrite(LED_BUILTIN, LOW);
     }
 }
