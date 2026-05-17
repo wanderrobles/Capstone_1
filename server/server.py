@@ -1,9 +1,11 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 import csv
 import os
 from datetime import datetime
 
 app = Flask(__name__)
+CORS(app)
 
 # Path where the CSV will be saved — synced to OneDrive automatically
 CSV_PATH = "/Users/wanderrobles/Capstone Project/data/data.csv"
@@ -39,6 +41,23 @@ def receive_data():
 
     return jsonify({"status": "ok", "count": len(readings)}), 200
 
+@app.route("/latest")
+def latest():
+    if not os.path.exists(CSV_PATH):
+        return jsonify({"error": "no data yet"}), 404
+    with open(CSV_PATH, newline="") as f:
+        rows = list(csv.reader(f))
+    data_rows = [r for r in rows if r and r[0] != "timestamp"]
+    if not data_rows:
+        return jsonify({"error": "no data yet"}), 404
+    last = data_rows[-1]
+    return jsonify({
+        "timestamp":    last[0],
+        "temperature":  float(last[1]),
+        "soil_moisture": int(float(last[2])),
+    })
+
+
 if __name__ == "__main__":
     # Runs on all network interfaces so the ESP32 can reach it
-    app.run(host="0.0.0.0", port=5000)
+    app.run(host="0.0.0.0", port=5001)

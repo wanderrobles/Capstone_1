@@ -1,35 +1,26 @@
 #pragma once
 #include <Arduino.h>
-#include <LiquidCrystal.h>
+#include <LiquidCrystal_I2C.h>
 #include "config.h"
 
 class display_manager {
 private:
-    LiquidCrystal _lcd;
+    LiquidCrystal_I2C _lcd;
 
 public:
     display_manager();
     void begin();
-    void setBrightness(int percent);
     void showReadings(int moisture, float tempC);
     void showMessage(String line1, String line2 = "");
     void clear();
 };
 
 display_manager::display_manager()
-    : _lcd(LCD_RS, LCD_EN, LCD_D4, LCD_D5, LCD_D6, LCD_D7) {}
+    : _lcd(LCD_I2C_ADDR, LCD_COLS, LCD_ROWS) {}
 
 void display_manager::begin() {
-    _lcd.begin(16, 2);
-    _lcd.clear();
-    ledcSetup(LCD_BL_CH, 5000, 8);
-    ledcAttachPin(LCD_BL, LCD_BL_CH);
-    setBrightness(80);
-}
-
-
-void display_manager::setBrightness(int percent) {
-    ledcWrite(LCD_BL_CH, map(percent, 0, 100, 0, 255));
+    _lcd.init();
+    _lcd.backlight();
 }
 
 void display_manager::showReadings(int moisture, float tempC) {

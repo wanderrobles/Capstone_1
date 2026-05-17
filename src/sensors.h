@@ -7,16 +7,15 @@
 
 class sensor_reader {
 private:
-    const int DRY_VALUE = 1456;
-    const int WET_VALUE = 860;
+    const int DRY_VALUE = 2500;
+    const int WET_VALUE = 1720;
     int _moistPin;
-    int _pwrPin;
     int _tempPin;
     OneWire _oneWire;
     DallasTemperature _tempSensor;
 
 public:
-    sensor_reader(int moistPin, int pwrPin, int tempPin);
+    sensor_reader(int moistPin, int tempPin);
     int readMoistValue();
     float readTemp();
 };
