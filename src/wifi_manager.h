@@ -4,7 +4,6 @@
 #include <HTTPClient.h>
 #include <esp_system.h>
 #include <time.h>
-#include <vector>
 #include "config.h"
 
 #ifndef LED_BUILTIN
@@ -22,11 +21,12 @@ private:
     bool _isConnected;
     bool _ntpSynced;
     unsigned long _lastSendTime;
-    std::vector<Reading> _buffer;
+    Reading _lastReading;
+    bool _hasReading;
 
     void syncNTP();
     bool getTimestamp(char* buf, size_t len);
-    void sendBatch();
+    void sendReading();
 
 public:
     wifi_manager();

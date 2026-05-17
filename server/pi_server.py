@@ -9,6 +9,8 @@ a live dashboard at http://<pi-ip>:5000/
 import csv
 import logging
 import os
+import subprocess
+import threading
 from datetime import datetime
 from pathlib import Path
 
@@ -21,6 +23,14 @@ DATA_DIR   = Path.home() / "capstone_data"
 CSV_PATH   = DATA_DIR / "data.csv"
 LOG_PATH   = DATA_DIR / "server.log"
 MAX_DASHBOARD_ROWS = 50   # rows shown in the browser table
+
+# OneDrive sync via rclone — set ONEDRIVE_REMOTE to your rclone remote name
+# and ONEDRIVE_DEST to the folder path inside OneDrive where the CSV should land.
+# Example: remote named "onedrive", folder "Capstone" → file ends up at
+#          OneDrive/Capstone/data.csv
+# Set ONEDRIVE_REMOTE = "" to disable syncing.
+ONEDRIVE_REMOTE = "onedrive"          # rclone remote name (from `rclone config`)
+ONEDRIVE_DEST   = "Capstone"          # destination folder inside OneDrive
 # ──────────────────────────────────────────────────────────────────────────────
 
 DATA_DIR.mkdir(parents=True, exist_ok=True)
@@ -125,6 +135,26 @@ DASHBOARD_HTML = """
 """
 
 
+def _sync_to_onedrive():
+    """Copy the CSV to OneDrive in a background thread using rclone."""
+    if not ONEDRIVE_REMOTE:
+        return
+    dest = f"{ONEDRIVE_REMOTE}:{ONEDRIVE_DEST}"
+    try:
+        result = subprocess.run(
+            ["rclone", "copy", str(CSV_PATH), dest],
+            capture_output=True, text=True, timeout=30
+        )
+        if result.returncode == 0:
+            log.info("OneDrive sync OK → %s/%s", dest, CSV_PATH.name)
+        else:
+            log.warning("OneDrive sync failed: %s", result.stderr.strip())
+    except FileNotFoundError:
+        log.error("rclone not found — install it with: sudo apt install rclone")
+    except subprocess.TimeoutExpired:
+        log.warning("OneDrive sync timed out after 30 s")
+
+
 def _read_csv_rows(limit: int | None = None) -> list[dict]:
     rows = []
     if not CSV_PATH.exists():
@@ -163,6 +193,9 @@ def receive_data():
                 rows_written += 1
             except (ValueError, TypeError) as exc:
                 log.warning("Skipped malformed reading %s: %s", r, exc)
+
+    if rows_written:
+        threading.Thread(target=_sync_to_onedrive, daemon=True).start()
 
     return jsonify({"status": "ok", "stored": rows_written}), 200
 

@@ -21,12 +21,13 @@
 #define LCD_ROWS       2
 
 // ── Timing ────────────────────────────────
-#define READ_INTERVAL_MS      1000      // 1 second between sensor reads
-#define SAMPLE_INTERVAL_MS    5000  // 3 hours between HTTP sends
+//#define READ_INTERVAL_MS      60000      // 60 seconds between sensor reads
+//#define SAMPLE_INTERVAL_MS    3600000   // 1 hour between HTTP sends
+#define READ_INTERVAL_MS      30000
+#define SAMPLE_INTERVAL_MS    60000
 
 // NTP (Puerto Rico = UTC-4)
 #define NTP_OFFSET_SEC   (-4 * 3600)
 
-// Local Python Server
-// Run `ifconfig` (Mac/Linux) to find your laptop's IP
-#define SERVER_URL      "http://192.168.0.13:5001/data"
+// Google Sheets Apps Script endpoint
+#define SERVER_URL      "https://script.google.com/macros/s/AKfycbwk7F2_EtrKiodowwwKJaPa3esedsgn5UEnoQ22y5wa-yYVJvwa9Q_glU0rKv2jvuij/exec"
